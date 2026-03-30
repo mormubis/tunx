@@ -98,8 +98,12 @@ function toTitle(value: string): Title | undefined {
   return valid.includes(value as Title) ? (value as Title) : undefined;
 }
 
-/** Convert a YYYYMMDD integer to a UTC Date. */
-function parseDate(yyyymmdd: number): Date {
+/** Convert a YYYYMMDD integer to a UTC Date, or `undefined` if zero. */
+function parseDate(yyyymmdd: number): Date | undefined {
+  if (yyyymmdd === 0) {
+    return undefined;
+  }
+
   const year = Math.floor(yyyymmdd / 10_000);
   const month = Math.floor((yyyymmdd % 10_000) / 100);
   const day = yyyymmdd % 100;

@@ -20,14 +20,14 @@ interface DateRange {
 }
 
 interface Header {
-  /** High-entropy bytes 0x34–0x68, likely tied to SW license/installation. */
+  /** High-entropy bytes 0x34–0x67, likely tied to SW license/installation. */
   installSignature: Uint8Array;
   /** Older date (offset 0x30), possibly SW installation date. */
-  installedAt: Date;
+  installedAt?: Date;
   /** High-entropy bytes 0x08–0x1B, likely tied to SW license/installation. */
   licenseHash: Uint8Array;
   /** Date the file was last saved (offset 0x1C). */
-  savedAt: Date;
+  savedAt?: Date;
   /** Chess-Results tournament ID (offset 0x20). */
   tournamentId: number;
 }
