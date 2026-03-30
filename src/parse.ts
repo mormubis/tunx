@@ -18,8 +18,16 @@ import {
   PAIRING_RECORD_SIZE,
   PLAYER_MARKER,
   PLAYER_NUMERIC_BLOCK_SIZE,
+  PLAYER_NUMERIC_OFFSET_ALPHABETICAL_INDEX,
+  PLAYER_NUMERIC_OFFSET_CATEGORY_ID,
   PLAYER_NUMERIC_OFFSET_FIDE_ID,
   PLAYER_NUMERIC_OFFSET_FIDE_RATING,
+  PLAYER_NUMERIC_OFFSET_K_FACTOR,
+  PLAYER_NUMERIC_OFFSET_NATIONAL_RATING,
+  PLAYER_NUMERIC_OFFSET_RATING_DELTA,
+  PLAYER_NUMERIC_OFFSET_RATING_PERIOD,
+  PLAYER_NUMERIC_OFFSET_REGISTRATION_ID,
+  PLAYER_NUMERIC_OFFSET_SEX,
   PLAYER_STRINGS,
   PLAYER_STRING_COUNT,
   RESULT_CODE,
@@ -312,15 +320,37 @@ export default function parse(
       numericBlock.byteLength,
     );
 
+    const sexByte = numericBlock[PLAYER_NUMERIC_OFFSET_SEX];
     const fideRating = numericView.getUint16(
       PLAYER_NUMERIC_OFFSET_FIDE_RATING,
       true,
     );
     const nationalRating = numericView.getUint16(
-      PLAYER_NUMERIC_OFFSET_FIDE_RATING + 2,
+      PLAYER_NUMERIC_OFFSET_NATIONAL_RATING,
+      true,
+    );
+    const ratingDelta = numericView.getUint16(
+      PLAYER_NUMERIC_OFFSET_RATING_DELTA,
+      true,
+    );
+    const ratingPeriod = numericView.getUint16(
+      PLAYER_NUMERIC_OFFSET_RATING_PERIOD,
+      true,
+    );
+    const categoryId = numericView.getUint16(
+      PLAYER_NUMERIC_OFFSET_CATEGORY_ID,
+      true,
+    );
+    const registrationId = numericView.getUint16(
+      PLAYER_NUMERIC_OFFSET_REGISTRATION_ID,
       true,
     );
     const fideId = numericView.getUint32(PLAYER_NUMERIC_OFFSET_FIDE_ID, true);
+    const alphabeticalIndex = numericView.getUint16(
+      PLAYER_NUMERIC_OFFSET_ALPHABETICAL_INDEX,
+      true,
+    );
+    const kFactor = numericView.getUint16(PLAYER_NUMERIC_OFFSET_K_FACTOR, true);
 
     const surname = strings[PLAYER_STRINGS.SURNAME] ?? '';
     const firstName = strings[PLAYER_STRINGS.FIRST_NAME] ?? '';
@@ -330,11 +360,15 @@ export default function parse(
     const nationalId = strings[PLAYER_STRINGS.NATIONAL_ID] ?? '';
 
     const player: Player = {
+      alphabeticalIndex: alphabeticalIndex > 0 ? alphabeticalIndex : undefined,
+      categoryId: categoryId > 0 ? categoryId : undefined,
       club: nonEmpty(club),
       federation: nonEmpty(federation),
       fideId: fideId > 0 ? fideId : undefined,
       firstName,
+      kFactor: kFactor > 0 ? kFactor : undefined,
       nationalId: nonEmpty(nationalId),
+      nationalRating: nationalRating > 0 ? nationalRating : undefined,
       pairingNumber: index + 1,
       rating:
         fideRating > 0
@@ -342,7 +376,11 @@ export default function parse(
           : nationalRating > 0
             ? nationalRating
             : undefined,
+      ratingDelta: ratingDelta > 0 ? ratingDelta : undefined,
+      ratingPeriod: ratingPeriod > 0 ? ratingPeriod : undefined,
+      registrationId: registrationId > 0 ? registrationId : undefined,
       results: [],
+      sex: sexByte === 1 ? 'F' : undefined,
       surname,
       title: toTitle(titleRaw),
     };

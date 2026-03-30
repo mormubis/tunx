@@ -84,6 +84,18 @@ describe('parse()', () => {
       it('has the correct FIDE ID', () => {
         expect(player?.fideId).toBe(2_108_372);
       });
+
+      it('has the correct national rating', () => {
+        expect(player?.nationalRating).toBe(1869);
+      });
+
+      it('has kFactor 20', () => {
+        expect(player?.kFactor).toBe(20);
+      });
+
+      it('has an alphabetical index', () => {
+        expect(player?.alphabeticalIndex).toBe(3);
+      });
     });
 
     describe('player 5 (Fier)', () => {
@@ -194,6 +206,34 @@ describe('parse()', () => {
 
       it('has the correct federation', () => {
         expect(player?.federation).toBe('SLO');
+      });
+    });
+
+    describe('player 40 (Khademalsharieh)', () => {
+      const player = tournament?.players[39];
+
+      it('has sex F', () => {
+        expect(player?.sex).toBe('F');
+      });
+
+      it('has kFactor 10', () => {
+        expect(player?.kFactor).toBe(10);
+      });
+    });
+
+    describe('player 1 (Fedoseev) numeric fields', () => {
+      const player = tournament?.players[0];
+
+      it('has kFactor 10', () => {
+        expect(player?.kFactor).toBe(10);
+      });
+
+      it('does not have sex set (male = undefined)', () => {
+        expect(player?.sex).toBeUndefined();
+      });
+
+      it('has nationalRating undefined (no national rating)', () => {
+        expect(player?.nationalRating).toBeUndefined();
       });
     });
 

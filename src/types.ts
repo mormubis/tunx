@@ -55,15 +55,22 @@ interface ParseWarning {
 }
 
 interface Player {
+  alphabeticalIndex?: number;
   birthYear?: number;
+  categoryId?: number;
   club?: string;
   federation?: string;
   fideId?: number;
   firstName: string;
   group?: string;
+  kFactor?: number;
   nationalId?: string;
+  nationalRating?: number;
   pairingNumber: number;
   rating?: number;
+  ratingDelta?: number;
+  ratingPeriod?: number;
+  registrationId?: number;
   results: Result[];
   sex?: 'F' | 'M';
   surname: string;
