@@ -6,6 +6,9 @@ tournament file parser/serializer.
 See the root `AGENTS.md` for workspace-wide conventions (package manager,
 TypeScript settings, formatting, naming, testing, ESLint rules).
 
+**Backlog:** See [`BACKLOG.md`](BACKLOG.md) for pending work items. Update it
+after completing any work.
+
 ---
 
 ## Project Overview
