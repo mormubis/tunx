@@ -165,8 +165,8 @@ Each pairing record is 21 bytes:
 | 2      | U16LE | Black player number |
 | 4      | U16LE | Result code         |
 
-Result codes: `1` = white wins, `2` = draw, `3` = black wins, `4` = white wins
-(forfeit), `5` = black wins (forfeit), `9` = unplayed/bye.
+Result codes: `0` = unpaired, `1` = white wins, `2` = draw, `3` = black wins,
+`4` = white wins (forfeit), `5` = black wins (forfeit), `9` = unplayed/bye.
 
 Bye player number is `0xFFFE`. Records are ordered by round then board. Pairings
 per round = `ceil(playerCount / 2)`.

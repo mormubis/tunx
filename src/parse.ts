@@ -75,6 +75,9 @@ function findMarker(buffer: Uint8Array, marker: number): number {
 /** Map a TUNX result code to our ResultKind type. */
 function mapResultCode(code: number): ResultKind | undefined {
   switch (code) {
+    case RESULT_CODE.UNPAIRED: {
+      return 'unpaired';
+    }
     case RESULT_CODE.WHITE_WINS: {
       return 'win';
     }

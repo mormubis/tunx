@@ -305,6 +305,13 @@ describe('parse()', () => {
     it('has currentRound 5', () => {
       expect(tournament?.currentRound).toBe(5);
     });
+
+    it('has unpaired results in round 6', () => {
+      const round6 = tournament?.rounds[5];
+      expect(round6).toBeDefined();
+      const unpaired = round6?.pairings.filter((p) => p.result === 'unpaired');
+      expect(unpaired?.length).toBeGreaterThan(0);
+    });
   });
 });
 
