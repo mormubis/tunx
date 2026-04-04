@@ -24,8 +24,9 @@ Last updated: 2026-04-04
 
 ## Residual unknowns
 
-- [ ] Config 0x15 field (values 0–3 across 16 files, does not reliably map to
-      pairing system, rating mode, or any other known tournament property).
+- [ ] Config 0x15 field (values 0–3 across 37 files from 11 countries, does not
+      correlate with pairing system, rating mode, player categories, age groups,
+      time control, or federation). Exhaustively tested — unknown.
 - [ ] Config middle section (~5700 bytes of mostly zeros with sparse data at
       0x96, 0x280, 0x338, 0x4E5).
 - [ ] Player numeric 0x20 (group/sub-category — non-zero in 2/698 players) and
