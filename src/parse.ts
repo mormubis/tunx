@@ -5,6 +5,8 @@ import {
   CONFIG_OFFSET_END_DATE,
   CONFIG_OFFSET_PLAYER_COUNT,
   CONFIG_OFFSET_START_DATE,
+  CONFIG_OFFSET_TIEBREAK_CODES,
+  CONFIG_OFFSET_TIEBREAK_COUNT,
   CONFIG_OFFSET_TOTAL_ROUNDS,
   HEADER_INSTALLED_AT_OFFSET,
   HEADER_INSTALL_SIGNATURE_OFFSET,
@@ -34,6 +36,7 @@ import {
   PLAYER_STRINGS,
   PLAYER_STRING_COUNT,
   RESULT_CODE,
+  TIEBREAK_CODE,
 } from './constants.js';
 import BinaryReader from './reader.js';
 
@@ -47,6 +50,7 @@ import type {
   Result,
   ResultKind,
   Round,
+  Tiebreak,
   Title,
   Tournament,
 } from './types.js';
@@ -269,6 +273,24 @@ export default function parse(
     startDate !== undefined && endDate !== undefined
       ? { end: endDate, start: startDate }
       : undefined;
+
+  // ── Tiebreaks ────────────────────────────────────────────────────────────
+  const tiebreakCount = configView.getUint8(
+    configDataOffset + CONFIG_OFFSET_TIEBREAK_COUNT,
+  );
+
+  const tiebreaks: Tiebreak[] = [];
+  for (let index = 0; index < tiebreakCount && index < 5; index++) {
+    const code = configView.getUint16(
+      configDataOffset + CONFIG_OFFSET_TIEBREAK_CODES + index * 2,
+      true,
+    );
+    const lowByte = (code >> 8) & 0xff;
+    const mapped = TIEBREAK_CODE[lowByte as keyof typeof TIEBREAK_CODE];
+    if (mapped !== undefined) {
+      tiebreaks.push(mapped);
+    }
+  }
 
   if (totalRounds === 0) {
     onWarning?.({
@@ -697,7 +719,7 @@ export default function parse(
     players,
     rounds,
     subtitle: subtitleShort,
-    tiebreaks: [],
+    tiebreaks,
     timeControl,
     venue,
   };

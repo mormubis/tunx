@@ -37,6 +37,12 @@ const HEADER_TOURNAMENT_ID_OFFSET = 0x20;
 /** Metadata strings begin immediately after the header. */
 const METADATA_OFFSET = 0x6c;
 
+/** Offset from config data start to the first tiebreak code (5 × U16LE). */
+const CONFIG_OFFSET_TIEBREAK_CODES = 0x1c;
+
+/** Offset from config data start to the number of tiebreaks (U8). */
+const CONFIG_OFFSET_TIEBREAK_COUNT = 0x1b;
+
 /**
  * Offset from the start of the config data (after marker + 4) to
  * the total-rounds field (U16LE).
@@ -139,6 +145,22 @@ const PLAYER_STRINGS = {
 } as const;
 
 /**
+ * Maps TUNX tiebreak codes (low byte of U16LE) to Tiebreak type strings.
+ * Only the low byte is meaningful; the high byte is always 0x00.
+ */
+const TIEBREAK_CODE = {
+  0x0b: 'progressive',
+  0x25: 'performance-rating',
+  0x34: 'median-buchholz',
+  0x3d: 'number-of-wins',
+  0x44: 'direct-encounter',
+  0x51: 'sonneborn-berger',
+  0x54: 'buchholz',
+  0x55: 'buchholz-cut-1',
+  0x58: 'average-rating',
+} as const;
+
+/**
  * Result codes stored in the pairing record.
  */
 const RESULT_CODE = {
@@ -161,6 +183,8 @@ export {
   CONFIG_OFFSET_END_DATE,
   CONFIG_OFFSET_PLAYER_COUNT,
   CONFIG_OFFSET_START_DATE,
+  CONFIG_OFFSET_TIEBREAK_CODES,
+  CONFIG_OFFSET_TIEBREAK_COUNT,
   CONFIG_OFFSET_TOTAL_ROUNDS,
   HEADER_INSTALL_SIGNATURE_OFFSET,
   HEADER_INSTALL_SIGNATURE_SIZE,
@@ -190,4 +214,5 @@ export {
   PLAYER_STRING_COUNT,
   PLAYER_STRINGS,
   RESULT_CODE,
+  TIEBREAK_CODE,
 };

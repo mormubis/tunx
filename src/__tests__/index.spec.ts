@@ -133,6 +133,17 @@ describe('parse()', () => {
       expect(tournament?.rounds[0]?.date).toBe('2026-03-28');
     });
 
+    it('has 5 tiebreaks', () => {
+      expect(tournament?.tiebreaks).toHaveLength(5);
+      expect(tournament?.tiebreaks).toEqual([
+        'progressive',
+        'buchholz',
+        'buchholz',
+        'buchholz-cut-1',
+        'number-of-wins',
+      ]);
+    });
+
     it('stores raw data for round-trip', () => {
       expect(tournament?._raw).toBeDefined();
       expect(tournament?._raw.headerBytes).toBeInstanceOf(Uint8Array);
@@ -250,6 +261,12 @@ describe('parse()', () => {
       it('has nationalRating undefined (no national rating)', () => {
         expect(player?.nationalRating).toBeUndefined();
       });
+    });
+
+    it('has tiebreaks including performance-rating', () => {
+      expect(tournament?.tiebreaks).toContain('performance-rating');
+      expect(tournament?.tiebreaks).toContain('median-buchholz');
+      expect(tournament?.tiebreaks).toContain('progressive');
     });
 
     it('has currentRound 9', () => {
