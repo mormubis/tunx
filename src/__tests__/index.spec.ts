@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import { create, parse, stringify } from '../index.js';
 
+import type { Tournament } from '../types.js';
+
 const { join } = nodePath;
 const FIXTURES = join(import.meta.dirname, 'fixtures');
 
@@ -408,6 +410,60 @@ describe('create()', () => {
     expect(() => create(noRaw, { name: 'X', players: [], rounds: [] })).toThrow(
       RangeError,
     );
+  });
+
+  it('creates from a parsed Tournament object', () => {
+    const source = parse(fixture('sample.TUNX'));
+    const result = create(template!, source!);
+
+    expect(result.name).toBe(source!.name);
+    expect(result.players).toHaveLength(source!.players.length);
+    expect(result.rounds).toBe(source!.rounds);
+  });
+
+  it('creates from a trf-compatible Tournament object', () => {
+    const trfLike = {
+      name: 'TRF Import Test',
+      pairings: [[{ white: 1, black: 2, board: 1, result: '1' as const }]],
+      players: [
+        {
+          fideId: '1503014',
+          name: 'Carlsen, Magnus',
+          pairingNumber: 1,
+          points: 1,
+          rank: 1,
+          rating: 2830,
+          results: [],
+        },
+        {
+          fideId: '2016192',
+          name: 'Nakamura, Hikaru',
+          pairingNumber: 2,
+          points: 0,
+          rank: 2,
+          rating: 2780,
+          results: [],
+        },
+      ],
+      rounds: 1,
+    };
+
+    const result = create(template!, trfLike as unknown as Tournament);
+    expect(result.name).toBe('TRF Import Test');
+    expect(result.players).toHaveLength(2);
+    expect(result.players[0]?.name).toBe('Carlsen, Magnus');
+    expect(result.players[1]?.name).toBe('Nakamura, Hikaru');
+    expect(result.rounds).toBe(1);
+  });
+
+  it('preserves player names from a Tournament input round-trip', () => {
+    const source = parse(fixture('2023_elllobregat_a_753347.TUNX'));
+    const result = create(template!, source!);
+
+    // Each player name should survive the Tournament → create → output path
+    for (let index = 0; index < Math.min(5, source!.players.length); index++) {
+      expect(result.players[index]?.name).toBe(source!.players[index]?.name);
+    }
   });
 });
 

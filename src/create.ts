@@ -21,6 +21,7 @@ import {
 import type {
   CreateInput,
   CreatePlayer,
+  CreateRound,
   RawTournament,
   ResultCode,
   Tournament,
@@ -277,6 +278,70 @@ function flipResultCode(code: ResultCode): ResultCode {
   }
 }
 
+/** Return true if input is a Tournament (rounds is a number) vs CreateInput (rounds is an array). */
+function isTournament(input: CreateInput | Tournament): input is Tournament {
+  return typeof input.rounds === 'number';
+}
+
+/** Convert a Tournament object into CreateInput so the existing build functions work. */
+function tournamentToCreateInput(tournament: Tournament): CreateInput {
+  const players: CreatePlayer[] = tournament.players.map((p) => {
+    const commaIndex = p.name.indexOf(', ');
+    const surname = commaIndex === -1 ? p.name : p.name.slice(0, commaIndex);
+    const firstName = commaIndex === -1 ? '' : p.name.slice(commaIndex + 2);
+
+    return {
+      club: undefined,
+      federation: p.federation,
+      fideId: p.fideId === undefined ? undefined : Number(p.fideId),
+      firstName,
+      kFactor: undefined,
+      nationalId: p.nationalRatings?.[0]?.nationalId,
+      nationalRating: p.nationalRatings?.[0]?.rating,
+      rating: p.rating,
+      sex:
+        p.sex === 'w'
+          ? ('F' as const)
+          : p.sex === 'm'
+            ? ('M' as const)
+            : undefined,
+      surname,
+      title: p.title,
+    };
+  });
+
+  const nRounds = tournament.rounds;
+  const sourcePairings = tournament.pairings ?? [];
+
+  const rounds: CreateRound[] = [];
+  for (let r = 0; r < nRounds; r++) {
+    const roundPairings = sourcePairings[r] ?? [];
+    rounds.push({
+      date: tournament.roundDates?.[r],
+      pairings: roundPairings.map((p) => ({
+        black: p.black,
+        result: p.result ?? ('Z' as ResultCode),
+        white: p.white,
+      })),
+    });
+  }
+
+  return {
+    chiefArbiter: tournament.chiefArbiter,
+    city: tournament.city,
+    deputyArbiters: tournament.deputyArbiters,
+    endDate: tournament.endDate,
+    federation: tournament.federation,
+    name: tournament.name ?? '',
+    players,
+    rounds,
+    startDate: tournament.startDate,
+    subtitle: tournament.subtitle,
+    timeControl: tournament.timeControl,
+    venue: tournament.venue,
+  };
+}
+
 /**
  * Create a new TUNX tournament using an existing tournament as a template.
  *
@@ -284,13 +349,17 @@ function flipResultCode(code: ResultCode): ResultCode {
  * structure, unknown sections). The input provides the new tournament data.
  *
  * @param template - A parsed `Tournament` to use as the binary template.
- * @param input - The new tournament data.
+ * @param input - The new tournament data as `CreateInput` or a `Tournament`
+ *   object (e.g. from `parse()` or `trf.parse()`).
  * @returns A new `Tournament` with `_raw` populated, ready for `stringify()`.
  */
 export default function create(
   template: Tournament,
-  input: CreateInput,
+  input: CreateInput | Tournament,
 ): Tournament {
+  const createInput = isTournament(input)
+    ? tournamentToCreateInput(input)
+    : input;
   if (!template._raw) {
     throw new RangeError(
       'create() requires template._raw — only tournaments produced by parse() can be used as templates',
@@ -298,21 +367,29 @@ export default function create(
   }
 
   const raw: RawTournament = {
-    configBytes: patchConfigBytes(template._raw.configBytes, input),
+    configBytes: patchConfigBytes(template._raw.configBytes, createInput),
     headerBytes: new Uint8Array(template._raw.headerBytes),
-    metadataStrings: buildMetadataStrings(template._raw.metadataStrings, input),
+    metadataStrings: buildMetadataStrings(
+      template._raw.metadataStrings,
+      createInput,
+    ),
     pairingBytes: [],
-    pairingsSection: buildPairingsSection(template._raw.pairingsSection, input),
-    playerNumericBytes: input.players.map((p) => buildPlayerNumericBlock(p)),
-    playerStrings: input.players.map((p) => buildPlayerStrings(p)),
+    pairingsSection: buildPairingsSection(
+      template._raw.pairingsSection,
+      createInput,
+    ),
+    playerNumericBytes: createInput.players.map((p) =>
+      buildPlayerNumericBlock(p),
+    ),
+    playerStrings: createInput.players.map((p) => buildPlayerStrings(p)),
   };
 
   // Build structured player data
-  const players = input.players.map((p, index) => {
+  const players = createInput.players.map((p, index) => {
     const name =
       p.firstName.length > 0 ? `${p.surname}, ${p.firstName}` : p.surname;
 
-    const results = input.rounds.flatMap((round, roundIndex) => {
+    const results = createInput.rounds.flatMap((round, roundIndex) => {
       const pairing = round.pairings.find(
         (pr) => pr.white === index + 1 || pr.black === index + 1,
       );
@@ -376,21 +453,21 @@ export default function create(
 
   return {
     _raw: raw,
-    chiefArbiter: input.chiefArbiter,
-    city: input.city,
-    currentRound: input.rounds.length,
-    deputyArbiters: input.deputyArbiters,
-    endDate: input.endDate,
-    federation: input.federation,
+    chiefArbiter: createInput.chiefArbiter,
+    city: createInput.city,
+    currentRound: createInput.rounds.length,
+    deputyArbiters: createInput.deputyArbiters,
+    endDate: createInput.endDate,
+    federation: createInput.federation,
     header: template.header,
-    name: input.name,
+    name: createInput.name,
     numberOfPlayers: players.length,
     players,
-    rounds: input.rounds.length,
-    startDate: input.startDate,
-    subtitle: input.subtitle,
+    rounds: createInput.rounds.length,
+    startDate: createInput.startDate,
+    subtitle: createInput.subtitle,
     tiebreaks: undefined,
-    timeControl: input.timeControl,
-    venue: input.venue,
+    timeControl: createInput.timeControl,
+    venue: createInput.venue,
   };
 }
