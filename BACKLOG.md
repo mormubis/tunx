@@ -1,27 +1,39 @@
 # Backlog
 
-Last updated: 2026-03-30
+Last updated: 2026-04-04
+
+## Done
+
+- [x] ~~Decode remaining header fields.~~ Decoded: tournamentId, savedAt,
+      installedAt, licenseHash, installSignature. Bytes 0x04, 0x24, 0x28–0x2F
+      remain undetermined.
+- [x] ~~Decode remaining player numeric fields.~~ Decoded: sex, nationalRating,
+      kFactor, alphabeticalIndex, ratingDelta, ratingPeriod, categoryId,
+      registrationId.
+- [x] ~~Decode config section (dates, pairing system, tiebreak settings).~~
+      Decoded: startDate, endDate, currentRound, round dates, tiebreaks. Pairing
+      system field at config 0x15 not yet reliably mapped.
+- [x] ~~Add NPM_TOKEN secret to GitHub repo.~~
+- [x] ~~Decode additional result codes.~~ Added code 0 = unpaired.
+- [x] ~~Support creating TUNX files from scratch.~~ Template-based
+      `create(template, input)` function added.
+- [x] ~~Decode tiebreak settings.~~ 9 tiebreak codes mapped from config
+      0x1C–0x25.
 
 ## Medium
 
-- [x] ~~Decode remaining header fields (bytes 0x08–0x1B checksum algorithm).~~
-      Decoded: tournamentId, savedAt, installedAt, licenseHash,
-      installSignature. Bytes 0x04, 0x24, 0x28–0x2F remain undetermined.
-- [x] ~~Decode remaining player numeric fields (110 bytes, only rating and FIDE
-      ID mapped).~~ Decoded: sex, nationalRating, kFactor, alphabeticalIndex,
-      ratingDelta, ratingPeriod, categoryId, registrationId. ~70 bytes remain as
-      zero-padding.
-- [x] ~~Decode config section fully (dates, pairing system, tiebreak
-      settings).~~ Decoded: startDate, endDate, currentRound, round dates.
-      Pairing system and tiebreak settings remain undetermined.
-- [x] ~~Add `NPM_TOKEN` secret to GitHub repo and verify npm publish.~~
+- [ ] Decode config 0x15 field (observed values 0–3 across 16 files, does not
+      reliably map to pairing system despite initial hypothesis).
+- [ ] Decode A3 sub-section per-round schedule records (round start times,
+      scheduled dates, board counts).
+- [ ] Decode D3 section offset table and use it for faster section lookup
+      instead of linear byte-scan.
 
 ## Low
 
-- [x] ~~Decode additional result codes beyond 1–5, 9.~~ Added code 0 = unpaired
-      (found in incomplete tournaments). Codes 6–8 not observed in any fixture
-      file.
-- [x] ~~Support creating TUNX files from scratch (currently requires `_raw` from
-      a parsed file).~~ Added template-based `create(template, input)` function.
-      Requires an existing parsed TUNX as template for license bytes and config
-      structure.
+- [ ] Decode player numeric 0x20 (group/sub-category), 0x36 (team ID).
+- [ ] Decode config middle section (~5700 bytes of mostly zeros with sparse data
+      at 0x96, 0x280, 0x338, 0x4E5).
+- [ ] Add Tiebreak types for Buchholz Cut 2 (`V`, 0x56) and Buchholz Cut 3 (`W`,
+      0x57) which appear in some files.
+- [ ] Decode header 0x24 (per-installation tournament counter).

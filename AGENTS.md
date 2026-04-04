@@ -112,13 +112,30 @@ count. Field indices:
 Starts with the 4-byte config marker. Relevant offsets within the data (after
 skipping the 4-byte marker):
 
-| Offset | Size  | Field         |
-| ------ | ----- | ------------- |
-| 0x00   | U16LE | Total rounds  |
-| 0x11   | U8    | Current round |
-| 0x13   | U16LE | Player count  |
-| 0x47   | U32LE | Start date    |
-| 0x4B   | U32LE | End date      |
+| Offset | Size  | Field          |
+| ------ | ----- | -------------- |
+| 0x00   | U16LE | Total rounds   |
+| 0x11   | U8    | Current round  |
+| 0x13   | U16LE | Player count   |
+| 0x1B   | U8    | Tiebreak count |
+| 0x1C   | 10    | Tiebreak codes |
+| 0x47   | U32LE | Start date     |
+| 0x4B   | U32LE | End date       |
+
+Tiebreak codes are 5 × U16LE slots at offset 0x1C. Only the high byte of each
+U16LE value is meaningful (the low byte is always 0x00). Known codes:
+
+| Code | Tiebreak           |
+| ---- | ------------------ |
+| 0x0B | Progressive        |
+| 0x25 | Performance rating |
+| 0x34 | Median Buchholz    |
+| 0x3D | Number of wins     |
+| 0x44 | Direct encounter   |
+| 0x51 | Sonneborn-Berger   |
+| 0x54 | Buchholz           |
+| 0x55 | Buchholz Cut 1     |
+| 0x58 | Average rating     |
 
 The entire config section is stored raw for round-trip.
 
@@ -173,6 +190,17 @@ per round = `ceil(playerCount / 2)`.
 
 The entire pairings section (including marker and all trailing sub-sections such
 as `D3` and `E3`) is stored verbatim in `_raw.pairingsSection`.
+
+### D3 section (marker `D3 FF 89 44`)
+
+Section offset table containing 4 × U32LE absolute file offsets pointing to the
+A3, A5, B3, and D3 markers respectively. Followed by 12 zero bytes (reserved
+slots). Used by SwissManager as a quick-jump index.
+
+### E3 section (marker `E3 FF 89 44`)
+
+File terminator. Always empty (0 bytes of data after the marker). Last 4 bytes
+of every TUNX file.
 
 ---
 
