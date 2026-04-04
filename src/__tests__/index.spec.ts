@@ -63,18 +63,14 @@ describe('parse()', () => {
     });
 
     it('has 7 rounds', () => {
-      expect(tournament?.rounds).toHaveLength(7);
+      expect(tournament?.rounds).toBe(7);
     });
 
     describe('player 1 (Aloisio)', () => {
       const player = tournament?.players[0];
 
-      it('has the correct surname', () => {
-        expect(player?.surname).toBe('Aloisio');
-      });
-
-      it('has the correct first name', () => {
-        expect(player?.firstName).toBe('Ponti Lopes');
+      it('has the correct name', () => {
+        expect(player?.name).toBe('Aloisio, Ponti Lopes');
       });
 
       it('has the correct FIDE rating', () => {
@@ -82,31 +78,27 @@ describe('parse()', () => {
       });
 
       it('has the correct FIDE ID', () => {
-        expect(player?.fideId).toBe(2_108_372);
+        expect(player?.fideId).toBe('2108372');
       });
 
       it('has the correct national rating', () => {
-        expect(player?.nationalRating).toBe(1869);
+        expect(player?.nationalRatings?.[0]?.rating).toBe(1869);
       });
 
-      it('has kFactor 20', () => {
-        expect(player?.kFactor).toBe(20);
+      it('has points >= 0', () => {
+        expect(player?.points).toBeGreaterThanOrEqual(0);
       });
 
-      it('has an alphabetical index', () => {
-        expect(player?.alphabeticalIndex).toBe(3);
+      it('has rank > 0', () => {
+        expect(player?.rank).toBeGreaterThan(0);
       });
     });
 
     describe('player 5 (Fier)', () => {
       const player = tournament?.players[4];
 
-      it('has the correct surname', () => {
-        expect(player?.surname).toBe('Luciano');
-      });
-
-      it('has the correct first name', () => {
-        expect(player?.firstName).toBe('Fier');
+      it('has the correct name', () => {
+        expect(player?.name).toBe('Luciano, Fier');
       });
 
       it('has the correct FIDE rating', () => {
@@ -114,7 +106,7 @@ describe('parse()', () => {
       });
 
       it('has the correct FIDE ID', () => {
-        expect(player?.fideId).toBe(2_120_526);
+        expect(player?.fideId).toBe('2120526');
       });
     });
 
@@ -122,19 +114,20 @@ describe('parse()', () => {
       expect(tournament?.currentRound).toBe(7);
     });
 
-    it('has dates from 2026-03-28 to 2026-03-28', () => {
-      expect(tournament?.dates).toEqual({
-        end: '2026-03-28',
-        start: '2026-03-28',
-      });
+    it('has startDate 2026-03-28', () => {
+      expect(tournament?.startDate).toBe('2026-03-28');
+    });
+
+    it('has endDate 2026-03-28', () => {
+      expect(tournament?.endDate).toBe('2026-03-28');
     });
 
     it('has round 1 date of 2026-03-28', () => {
-      expect(tournament?.rounds[0]?.date).toBe('2026-03-28');
+      expect(tournament?.roundDates?.[0]).toBe('2026-03-28');
     });
 
     it('has no round time set', () => {
-      expect(tournament?.rounds[0]?.time).toBeUndefined();
+      expect(tournament?.roundTimes?.[0]).toBeUndefined();
     });
 
     it('has 5 tiebreaks', () => {
@@ -160,11 +153,11 @@ describe('parse()', () => {
 
     describe('header', () => {
       it('has the correct tournament ID', () => {
-        expect(tournament?.header.tournamentId).toBe(1_378_181);
+        expect(tournament?.header?.tournamentId).toBe(1_378_181);
       });
 
       it('has a savedAt date of 2024-10-23', () => {
-        const d = tournament?.header.savedAt;
+        const d = tournament?.header?.savedAt;
         expect(d).toBeInstanceOf(Date);
         expect(d?.getUTCFullYear()).toBe(2024);
         expect(d?.getUTCMonth()).toBe(9); // 0-indexed
@@ -172,7 +165,7 @@ describe('parse()', () => {
       });
 
       it('has an installedAt date of 2011-01-15', () => {
-        const d = tournament?.header.installedAt;
+        const d = tournament?.header?.installedAt;
         expect(d).toBeInstanceOf(Date);
         expect(d?.getUTCFullYear()).toBe(2011);
         expect(d?.getUTCMonth()).toBe(0);
@@ -180,13 +173,13 @@ describe('parse()', () => {
       });
 
       it('has a 20-byte licenseHash', () => {
-        expect(tournament?.header.licenseHash).toBeInstanceOf(Uint8Array);
-        expect(tournament?.header.licenseHash).toHaveLength(20);
+        expect(tournament?.header?.licenseHash).toBeInstanceOf(Uint8Array);
+        expect(tournament?.header?.licenseHash).toHaveLength(20);
       });
 
       it('has a 52-byte installSignature', () => {
-        expect(tournament?.header.installSignature).toBeInstanceOf(Uint8Array);
-        expect(tournament?.header.installSignature).toHaveLength(52);
+        expect(tournament?.header?.installSignature).toBeInstanceOf(Uint8Array);
+        expect(tournament?.header?.installSignature).toHaveLength(52);
       });
     });
   });
@@ -208,18 +201,14 @@ describe('parse()', () => {
     });
 
     it('has 9 rounds', () => {
-      expect(tournament?.rounds).toHaveLength(9);
+      expect(tournament?.rounds).toBe(9);
     });
 
     describe('player 1 (Fedoseev)', () => {
       const player = tournament?.players[0];
 
-      it('has the correct surname', () => {
-        expect(player?.surname).toBe('Fedoseev');
-      });
-
-      it('has the correct first name', () => {
-        expect(player?.firstName).toBe('Vladimir');
+      it('has the correct name', () => {
+        expect(player?.name).toBe('Fedoseev, Vladimir');
       });
 
       it('has the title GM', () => {
@@ -231,7 +220,7 @@ describe('parse()', () => {
       });
 
       it('has the correct FIDE ID', () => {
-        expect(player?.fideId).toBe(24_130_737);
+        expect(player?.fideId).toBe('24130737');
       });
 
       it('has the correct federation', () => {
@@ -242,28 +231,20 @@ describe('parse()', () => {
     describe('player 40 (Khademalsharieh)', () => {
       const player = tournament?.players[39];
 
-      it('has sex F', () => {
-        expect(player?.sex).toBe('F');
-      });
-
-      it('has kFactor 10', () => {
-        expect(player?.kFactor).toBe(10);
+      it('has sex w (female)', () => {
+        expect(player?.sex).toBe('w');
       });
     });
 
     describe('player 1 (Fedoseev) numeric fields', () => {
       const player = tournament?.players[0];
 
-      it('has kFactor 10', () => {
-        expect(player?.kFactor).toBe(10);
-      });
-
       it('does not have sex set (male = undefined)', () => {
         expect(player?.sex).toBeUndefined();
       });
 
-      it('has nationalRating undefined (no national rating)', () => {
-        expect(player?.nationalRating).toBeUndefined();
+      it('has nationalRatings undefined (no national rating)', () => {
+        expect(player?.nationalRatings).toBeUndefined();
       });
     });
 
@@ -277,36 +258,37 @@ describe('parse()', () => {
       expect(tournament?.currentRound).toBe(9);
     });
 
-    it('has dates from 2023-11-30 to 2023-12-08', () => {
-      expect(tournament?.dates).toEqual({
-        end: '2023-12-08',
-        start: '2023-11-30',
-      });
+    it('has startDate 2023-11-30', () => {
+      expect(tournament?.startDate).toBe('2023-11-30');
+    });
+
+    it('has endDate 2023-12-08', () => {
+      expect(tournament?.endDate).toBe('2023-12-08');
     });
 
     it('has round 1 date of 2023-11-30', () => {
-      expect(tournament?.rounds[0]?.date).toBe('2023-11-30');
+      expect(tournament?.roundDates?.[0]).toBe('2023-11-30');
     });
 
     it('has round 9 date of 2023-12-08', () => {
-      expect(tournament?.rounds[8]?.date).toBe('2023-12-08');
+      expect(tournament?.roundDates?.[8]).toBe('2023-12-08');
     });
 
     it('has round 1 time of 16:00', () => {
-      expect(tournament?.rounds[0]?.time).toBe('16:00');
+      expect(tournament?.roundTimes?.[0]).toBe('16:00');
     });
 
     it('has round 9 time of 10:00', () => {
-      expect(tournament?.rounds[8]?.time).toBe('10:00');
+      expect(tournament?.roundTimes?.[8]).toBe('10:00');
     });
 
     describe('header', () => {
       it('has the correct tournament ID', () => {
-        expect(tournament?.header.tournamentId).toBe(753_347);
+        expect(tournament?.header?.tournamentId).toBe(753_347);
       });
 
       it('has a savedAt date of 2025-03-19', () => {
-        const d = tournament?.header.savedAt;
+        const d = tournament?.header?.savedAt;
         expect(d).toBeInstanceOf(Date);
         expect(d?.getUTCFullYear()).toBe(2025);
         expect(d?.getUTCMonth()).toBe(2);
@@ -314,7 +296,7 @@ describe('parse()', () => {
       });
 
       it('has an installedAt date of 2007-09-30', () => {
-        const d = tournament?.header.installedAt;
+        const d = tournament?.header?.installedAt;
         expect(d).toBeInstanceOf(Date);
         expect(d?.getUTCFullYear()).toBe(2007);
         expect(d?.getUTCMonth()).toBe(8);
@@ -336,9 +318,9 @@ describe('parse()', () => {
     });
 
     it('has unpaired results in round 6', () => {
-      const round6 = tournament?.rounds[5];
-      expect(round6).toBeDefined();
-      const unpaired = round6?.pairings.filter((p) => p.result === 'unpaired');
+      const round6Pairings = tournament?.pairings?.[5];
+      expect(round6Pairings).toBeDefined();
+      const unpaired = round6Pairings?.filter((p) => p.result === 'Z');
       expect(unpaired?.length).toBeGreaterThan(0);
     });
   });
@@ -357,7 +339,7 @@ describe('create()', () => {
       ],
       rounds: [
         {
-          pairings: [{ white: 1, black: 2, result: 'win' }],
+          pairings: [{ white: 1, black: 2, result: '1' }],
         },
       ],
     });
@@ -373,7 +355,7 @@ describe('create()', () => {
       ],
       rounds: [
         {
-          pairings: [{ white: 1, black: 2, result: 'draw' }],
+          pairings: [{ white: 1, black: 2, result: '=' }],
         },
       ],
     });
@@ -401,7 +383,7 @@ describe('create()', () => {
       rounds: [
         {
           date: '2026-03-30',
-          pairings: [{ white: 1, black: 2, result: 'win' as const }],
+          pairings: [{ white: 1, black: 2, result: '1' as const }],
         },
       ],
     };
@@ -413,12 +395,12 @@ describe('create()', () => {
     expect(reparsed).toBeDefined();
     expect(reparsed?.name).toBe('Round-Trip Test');
     expect(reparsed?.players).toHaveLength(2);
-    expect(reparsed?.players[0]?.surname).toBe('Carlsen');
+    expect(reparsed?.players[0]?.name).toBe('Carlsen, Magnus');
     expect(reparsed?.players[0]?.rating).toBe(2830);
-    expect(reparsed?.players[0]?.fideId).toBe(1_503_014);
-    expect(reparsed?.players[1]?.surname).toBe('Nakamura');
-    expect(reparsed?.rounds).toHaveLength(1);
-    expect(reparsed?.rounds[0]?.pairings[0]?.result).toBe('win');
+    expect(reparsed?.players[0]?.fideId).toBe('1503014');
+    expect(reparsed?.players[1]?.name).toBe('Nakamura, Hikaru');
+    expect(reparsed?.rounds).toBe(1);
+    expect(reparsed?.pairings?.[0]?.[0]?.result).toBe('1');
   });
 
   it('throws if template has no _raw', () => {
