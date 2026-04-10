@@ -31,12 +31,6 @@ class BinaryReader {
     return new TextDecoder('utf-16le').decode(bytes);
   }
 
-  readU8(): number {
-    const value = this.#view.getUint8(this.#cursor);
-    this.#cursor += 1;
-    return value;
-  }
-
   readU16LE(): number {
     const value = this.#view.getUint16(this.#cursor, true);
     this.#cursor += 2;
@@ -46,6 +40,12 @@ class BinaryReader {
   readU32LE(): number {
     const value = this.#view.getUint32(this.#cursor, true);
     this.#cursor += 4;
+    return value;
+  }
+
+  readU8(): number {
+    const value = this.#view.getUint8(this.#cursor);
+    this.#cursor += 1;
     return value;
   }
 

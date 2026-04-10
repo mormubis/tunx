@@ -31,13 +31,6 @@ class BinaryWriter {
     this.writeBytes(encoded);
   }
 
-  writeU8(value: number): void {
-    const bytes = new Uint8Array(1);
-    bytes[0] = value;
-    this.#chunks.push(bytes);
-    this.#size += 1;
-  }
-
   writeU16LE(value: number): void {
     const bytes = new Uint8Array(2);
     new DataView(bytes.buffer).setUint16(0, value, true);
@@ -50,6 +43,13 @@ class BinaryWriter {
     new DataView(bytes.buffer).setUint32(0, value, true);
     this.#chunks.push(bytes);
     this.#size += 4;
+  }
+
+  writeU8(value: number): void {
+    const bytes = new Uint8Array(1);
+    bytes[0] = value;
+    this.#chunks.push(bytes);
+    this.#size += 1;
   }
 }
 
