@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — 2026-04-10
+
+### Removed
+
+- `stringify()` is no longer exported — will return once config byte generation
+  is supported.
+- `_raw` and `RawTournament` removed from the public `Tournament` type.
+
 ## 0.1.2 — 2026-04-09
 
 ### Fixed
