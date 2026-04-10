@@ -388,8 +388,6 @@ export default function parse(
 
   // ── 7. Read pairings section ─────────────────────────────────────────────
   const pairingSectionStart = pairingsMarkerOffset + 4;
-  // Store raw bytes from pairings marker to EOF for round-trip fidelity.
-  const pairingsSection = input.slice(pairingsMarkerOffset);
   const pairingData = input.slice(pairingSectionStart);
   const totalPairingRecords = Math.floor(
     pairingData.length / PAIRING_RECORD_SIZE,

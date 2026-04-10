@@ -226,8 +226,9 @@ with compatible structure. The core shared shape:
 
 - `Tournament` — top-level container with `players: Player[]`, `rounds: number`,
   and optional metadata (`name`, `chiefArbiter`, `startDate`, `endDate`, etc.).
-- `Player` — structurally identical across both packages: `name`, `pairingNumber`,
-  `points`, `rank`, `results: RoundResult[]`, plus optional FIDE fields.
+- `Player` — structurally identical across both packages: `name`,
+  `pairingNumber`, `points`, `rank`, `results: RoundResult[]`, plus optional
+  FIDE fields.
 - `RoundResult` — `round`, `color`, `opponentId`, `result: ResultCode`.
 - `ResultCode` — same union: `'1'`, `'0'`, `'='`, `'+'`, `'-'`, `'W'`, `'D'`,
   `'L'`, etc.
