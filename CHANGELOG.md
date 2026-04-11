@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.2.0 — 2026-04-10
+## 0.2.0 — 2026-04-11
+
+### Changed
+
+- `RoundResult.opponentId` changed from `?: number` to `number | null` to match
+  `@echecs/trf`.
+- `ResultCode` now includes `'L'` (loss), matching `@echecs/trf`.
+- `NationalRating` now includes `birthDate`, `classification`, `name`, `origin`,
+  and `sex` optional fields, matching `@echecs/trf`.
 
 ### Removed
 
