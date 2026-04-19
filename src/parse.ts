@@ -8,6 +8,7 @@ import {
   CONFIG_OFFSET_TIEBREAK_CODES,
   CONFIG_OFFSET_TIEBREAK_COUNT,
   CONFIG_OFFSET_TOTAL_ROUNDS,
+  CONFIG_OFFSET_TOURNAMENT_TYPE,
   HEADER_INSTALLED_AT_OFFSET,
   HEADER_INSTALL_SIGNATURE_OFFSET,
   HEADER_INSTALL_SIGNATURE_SIZE,
@@ -31,6 +32,7 @@ import {
   PLAYER_STRING_COUNT,
   RESULT_CODE,
   TIEBREAK_CODE,
+  TOURNAMENT_TYPE_CODE,
 } from './constants.js';
 import BinaryReader from './reader.js';
 
@@ -292,6 +294,12 @@ export default function parse(
   const currentRound = configView.getUint8(
     configDataOffset + CONFIG_OFFSET_CURRENT_ROUND,
   );
+
+  const tournamentTypeCode = configView.getUint8(
+    configDataOffset + CONFIG_OFFSET_TOURNAMENT_TYPE,
+  );
+  const tournamentType: string | undefined =
+    TOURNAMENT_TYPE_CODE[tournamentTypeCode];
 
   const startDateRaw = configView.getUint32(
     configDataOffset + CONFIG_OFFSET_START_DATE,
@@ -712,6 +720,7 @@ export default function parse(
     subtitle: subtitleShort,
     tiebreaks: tiebreaks.length > 0 ? tiebreaks : undefined,
     timeControl,
+    tournamentType,
     venue,
   };
 }

@@ -314,4 +314,35 @@ describe('parse()', () => {
       expect(unpaired?.length).toBeGreaterThan(0);
     });
   });
+
+  describe('tournamentType detection', () => {
+    it('detects swiss for sample.TUNX', () => {
+      const tournament = parse(fixture('sample.TUNX'));
+      expect(tournament?.tournamentType).toBe('swiss');
+    });
+
+    it('detects swiss for 2023_elllobregat_a_753347.TUNX', () => {
+      const tournament = parse(fixture('2023_elllobregat_a_753347.TUNX'));
+      expect(tournament?.tournamentType).toBe('swiss');
+    });
+
+    it('detects round-robin for albanian_roundrobin_1381000.TUNX', () => {
+      const tournament = parse(fixture('re/albanian_roundrobin_1381000.TUNX'));
+      expect(tournament?.tournamentType).toBe('round-robin');
+    });
+
+    it('detects round-robin for austria_roundrobin_blitz_1384827.TUNX', () => {
+      const tournament = parse(
+        fixture('re/austria_roundrobin_blitz_1384827.TUNX'),
+      );
+      expect(tournament?.tournamentType).toBe('round-robin');
+    });
+
+    it('detects round-robin for austria_roundrobin_vereinsmeisterschaft_1288524.TUNX', () => {
+      const tournament = parse(
+        fixture('re/austria_roundrobin_vereinsmeisterschaft_1288524.TUNX'),
+      );
+      expect(tournament?.tournamentType).toBe('round-robin');
+    });
+  });
 });

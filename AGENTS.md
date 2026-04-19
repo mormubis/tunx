@@ -123,15 +123,24 @@ count. Field indices:
 Starts with the 4-byte config marker. Relevant offsets within the data (after
 skipping the 4-byte marker):
 
-| Offset | Size  | Field          |
-| ------ | ----- | -------------- |
-| 0x00   | U16LE | Total rounds   |
-| 0x11   | U8    | Current round  |
-| 0x13   | U16LE | Player count   |
-| 0x1B   | U8    | Tiebreak count |
-| 0x1C   | 10    | Tiebreak codes |
-| 0x47   | U32LE | Start date     |
-| 0x4B   | U32LE | End date       |
+| Offset | Size  | Field           |
+| ------ | ----- | --------------- |
+| 0x00   | U16LE | Total rounds    |
+| 0x0B   | U8    | Tournament type |
+| 0x11   | U8    | Current round   |
+| 0x13   | U16LE | Player count    |
+| 0x1B   | U8    | Tiebreak count  |
+| 0x1C   | 10    | Tiebreak codes  |
+| 0x47   | U32LE | Start date      |
+| 0x4B   | U32LE | End date        |
+
+Tournament type codes:
+
+| Code | Type             |
+| ---- | ---------------- |
+| 0x00 | Swiss            |
+| 0x01 | Round robin      |
+| 0x02 | Team round robin |
 
 Tiebreak codes are 5 × U16LE slots at offset 0x1C. Only the high byte of each
 U16LE value is meaningful (the low byte is always 0x00). Known codes:
