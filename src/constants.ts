@@ -67,6 +67,9 @@ const CONFIG_OFFSET_PLAYER_COUNT = 0x13;
 /** Offset from config data start to the tournament start date (U32LE, YYYYMMDD). */
 const CONFIG_OFFSET_START_DATE = 0x47;
 
+/** Offset from config data start to the tournament type (U8). */
+const CONFIG_OFFSET_TOURNAMENT_TYPE = 0x0b;
+
 /** Number of UTF-16LE string fields per player record. */
 const PLAYER_STRING_COUNT = 30;
 
@@ -145,6 +148,15 @@ const TIEBREAK_CODE = {
 } as const;
 
 /**
+ * Maps TUNX tournament type codes (U8 at config offset 0x0B) to type strings.
+ */
+const TOURNAMENT_TYPE_CODE: Record<number, string> = {
+  0x00: 'swiss',
+  0x01: 'round-robin',
+  0x02: 'team-round-robin',
+} as const;
+
+/**
  * Result codes stored in the pairing record.
  */
 const RESULT_CODE = {
@@ -169,6 +181,7 @@ export {
   CONFIG_OFFSET_START_DATE,
   CONFIG_OFFSET_TIEBREAK_CODES,
   CONFIG_OFFSET_TIEBREAK_COUNT,
+  CONFIG_OFFSET_TOURNAMENT_TYPE,
   CONFIG_OFFSET_TOTAL_ROUNDS,
   HEADER_INSTALL_SIGNATURE_OFFSET,
   HEADER_INSTALL_SIGNATURE_SIZE,
@@ -193,4 +206,5 @@ export {
   PLAYER_STRINGS,
   RESULT_CODE,
   TIEBREAK_CODE,
+  TOURNAMENT_TYPE_CODE,
 };
