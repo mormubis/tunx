@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0 — 2026-04-19
+
+### Added
+
+- `tournamentType` populated from config byte `0x0B` — detects `'swiss'`,
+  `'round-robin'`, and `'team-round-robin'`.
+
+### Removed
+
+- Deleted dead `stringify()` and `BinaryWriter` code left behind after v0.2.0
+  dropped `_raw`.
+- Removed `RawTournament` type (was not re-exported from the package entry
+  point).
+- Removed six unused player numeric offset constants.
+
 ## 0.2.0 — 2026-04-11
 
 ### Changed
